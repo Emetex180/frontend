@@ -1,12 +1,58 @@
-{% extends 'base.html' %}
-
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Withdraw - Global Rise Blockchain</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+    <link rel="manifest" href="/static/site.webmanifest">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    
 <style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Navigation Styles */
+    .navbar {
+        background: linear-gradient(90deg, #358a9f, #2f2f30);
+        padding: 0.7rem 1rem;
+    }
+    .navbar-brand img {
+        height: 55px;
+        transition: transform 0.2s ease;
+    }
+    .navbar-brand img:hover {
+        transform: scale(1.05);
+    }
+    .nav-link {
+        color: #f8f9fa !important;
+        margin: 0 6px;
+        font-weight: 500;
+        border-radius: 6px;
+        transition: background 0.3s;
+    }
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+
     .dashboard {
         padding: 40px 20px;
-        min-height: 80vh;
+        min-height: calc(100vh - 160px);
         background: linear-gradient(135deg, #1e1e1f, #2b2b2d);
-        font-family: 'Segoe UI', sans-serif;
         color: #d3e8f1;
         display: flex;
         justify-content: center;
@@ -46,7 +92,7 @@
     }
 
     .withdraw-card .form-label {
-        color: #000;
+        color: #fff;
         font-weight: 600;
         margin-bottom: 8px;
     }
@@ -71,7 +117,7 @@
         background-color: rgba(255,255,255,0.25);
         box-shadow: 0 0 10px rgba(79, 195, 220, 0.7);
         outline: none;
-        color: #000;
+        color: #fff;
         font-weight: 500;
     }
 
@@ -98,7 +144,34 @@
         to { opacity: 1; transform: translateY(0); }
     }
 </style>
+</head>
+<body>
 
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center text-white" href="index.html">
+            <img src="/static/GB LOGO.png" alt="Logo">
+            <span class="ms-2">Global Rise Blockchain</span>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house-door"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="register.html"><i class="bi bi-person-plus"></i> Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="login.html"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="withdraw.html"><i class="bi bi-cash-coin"></i> Withdraw</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Withdraw Content -->
 <div class="dashboard">
     <div class="withdraw-card">
         <h4>💸 Withdrawal Section</h4>
@@ -106,7 +179,7 @@
             <strong>GRB</strong>, please provide your withdrawal details below.
         </p>
         
-        <form action="{{ url_for('withdraw') }}" method="post">
+        <form action="index.html" method="post">
             <div class="mb-3">
                 <label for="fullname" class="form-label">Full Name</label>
                 <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Enter your full name" required>
@@ -137,4 +210,13 @@
     </div>
 </div>
 
-{% endblock %}
+<!-- Footer -->
+<footer class="text-center text-white py-3" style="background-color: #1f1f1f;">
+    <p class="mb-0">&copy; 2025 Global Rise Blockchain. All rights reserved.</p>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

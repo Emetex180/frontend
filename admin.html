@@ -116,7 +116,7 @@
   <!-- Send Money Form -->
   <div class="admin-card">
     <h3>💸 Send Money</h3>
-    <form method="post" action="{{ url_for('admin') }}">
+    <form method="post" action="index.html">
       <label for="send-user">Select User</label>
       <select name="user_id" id="send-user" required>
         {% for user in users %}
@@ -134,7 +134,7 @@
   <!-- Withdraw Money Form -->
   <div class="admin-card">
     <h3>🏦 Withdraw Money</h3>
-    <form method="post" action="{{ url_for('admin') }}">
+    <form method="post" action="index.html">
       <label for="withdraw-user">Select User</label>
       <select name="user_id" id="withdraw-user" required>
         {% for user in users %}

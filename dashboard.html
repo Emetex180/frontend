@@ -1,164 +1,268 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Global Rise Blockchain</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .nav-link {
+            border-radius: 8px;
+            margin: 2px 0;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
 
-{% block content %}
-<div class="container-fluid">
-    <div class="row">
-
-        <!-- Offcanvas Sidebar (Mobile like Telegram) -->
-        <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="mobileSidebar">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title">Menu</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-            </div>
-            <div class="offcanvas-body">
-                <div class="d-flex justify-content-center align-items-center my-4">
-                    <img src="{{ url_for('static', filename='GB LOGO.png') }}" 
-                         alt="Logo" 
-                         style="height: 80px; border-radius: 20px;">
+            <!-- Offcanvas Sidebar (Mobile like Telegram) -->
+            <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="mobileSidebar">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title">Menu</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
                 </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('page_404') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="https://t.me/crytoxcom"><i class="bi bi-wallet2 me-2"></i> Deposit</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('withdraw') }}"><i class="bi bi-cash-coin me-2"></i> Withdraw</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('page_404') }}"><i class="bi bi-receipt me-2"></i> Transactions</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Sidebar (desktop only, always visible) -->
-        <nav class="col-md-3 col-lg-2 d-none d-md-block bg-dark text-white sidebar">
-            <div class="position-sticky pt-3">
-                <div class="d-flex justify-content-center align-items-center my-4">
-                    <img src="{{ url_for('static', filename='GB LOGO.png') }}" 
-                         alt="Logo" 
-                         style="height: 80px; border-radius: 20px;">
+                <div class="offcanvas-body">
+                    <div class="d-flex justify-content-center align-items-center my-4">
+                        <img src="/static/GB LOGO.png" 
+                             alt="Logo" 
+                             style="height: 80px; border-radius: 20px;">
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a class="nav-link text-white" href="404.html"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="https://t.me/crytoxcom"><i class="bi bi-wallet2 me-2"></i> Deposit</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="withdraw.html"><i class="bi bi-cash-coin me-2"></i> Withdraw</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="404.html"><i class="bi bi-receipt me-2"></i> Transactions</a></li>
+                    </ul>
                 </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('page_404') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="https://t.me/crytoxcom"><i class="bi bi-wallet2 me-2"></i> Deposit</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('withdraw') }}"><i class="bi bi-cash-coin me-2"></i> Withdraw</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('page_404') }}"><i class="bi bi-receipt me-2"></i> Transactions</a></li>
-                </ul>
             </div>
-        </nav>
 
-        <!-- Toggle button for mobile (Telegram style) -->
-        <div class="d-md-none p-2">
-            <button class="btn btn-outline-dark w-100 mb-3" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
-                <i class="bi bi-list me-1"></i> Menu
-            </button>
-        </div>
+            <!-- Sidebar (desktop only, always visible) -->
+            <nav class="col-md-3 col-lg-2 d-none d-md-block bg-dark text-white sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-center align-items-center my-4">
+                        <img src="/static/GB LOGO.png" 
+                             alt="Logo" 
+                             style="height: 80px; border-radius: 20px;">
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a class="nav-link text-white" href="404.html"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="https://t.me/crytoxcom"><i class="bi bi-wallet2 me-2"></i> Deposit</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="withdraw.html"><i class="bi bi-cash-coin me-2"></i> Withdraw</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="404.html"><i class="bi bi-receipt me-2"></i> Transactions</a></li>
+                    </ul>
+                </div>
+            </nav>
 
-        <!-- Main Content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <!-- Toggle button for mobile (Telegram style) -->
+            <div class="d-md-none p-2">
+                <button class="btn btn-outline-dark w-100 mb-3" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                    <i class="bi bi-list me-1"></i> Menu
+                </button>
+            </div>
 
-            <h2 class="mb-4 fw-bold text-dark">Welcome, {{ username }}</h2>
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
 
-            <!-- Wallet Balance -->
-            <div class="card mb-4 shadow-sm rounded-3 overflow-hidden">
-                <div class="card-body text-center text-white" style="background: linear-gradient(135deg, #358a9f, #2f2f30);">
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 50%;">
-                            <i class="bi bi-wallet2" style="font-size: 2rem;"></i>
+                <h2 class="mb-4 fw-bold text-dark">Welcome, <span id="username">User</span></h2>
+
+                <!-- Wallet Balance -->
+                <div class="card mb-4 shadow-sm rounded-3 overflow-hidden">
+                    <div class="card-body text-center text-white" style="background: linear-gradient(135deg, #358a9f, #2f2f30);">
+                        <div class="d-flex justify-content-center align-items-center mb-3">
+                            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 50%;">
+                                <i class="bi bi-wallet2" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-light mb-1">Wallet Balance</h5>
+                        <h1 class="fw-bold">$<span id="balance">0.00</span></h1>
+                        <span class="badge bg-light text-dark px-3 py-2 mt-2">Currency: <span id="currency">USD</span></span>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="row mb-4 g-2">
+                    <div class="col-4">
+                        <a href="payment.html" class="btn btn-primary w-100"><i class="bi bi-wallet2 me-1"></i> Deposit</a>
+                    </div>
+                    <div class="col-4">
+                        <a href="withdraw.html" class="btn btn-dark w-100"><i class="bi bi-cash-coin me-1"></i> Withdraw</a>
+                    </div>
+                    <div class="col-4">
+                        <a href="404.html" class="btn btn-secondary w-100"><i class="bi bi-arrow-left-right me-1"></i> Transfer</a>
+                    </div>
+                </div>
+
+                <!-- Spending Chart -->
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-semibold text-dark">Spending Overview</h5>
+                        <canvas id="spendingChart" height="100"></canvas>
+                    </div>
+                </div>
+
+                <!-- Transactions -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-semibold text-dark">Recent Transactions</h5>
+                        <div id="transactions-container">
+                            <p class="text-muted mt-3">No transactions found.</p>
                         </div>
                     </div>
-                    <h5 class="fw-light mb-1">Wallet Balance</h5>
-                    <h1 class="fw-bold">${{ balance }}</h1>
-                    <span class="badge bg-light text-dark px-3 py-2 mt-2">Currency: {{ currency }}</span>
                 </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="row mb-4 g-2">
-                <div class="col-4">
-                    <a href="{{ url_for('payment') }}" class="btn btn-primary w-100"><i class="bi bi-wallet2 me-1"></i> Deposit</a>
-                </div>
-                <div class="col-4">
-                    <a href="{{ url_for('withdraw') }}" class="btn btn-dark w-100"><i class="bi bi-cash-coin me-1"></i> Withdraw</a>
-                </div>
-                <div class="col-4">
-                    <a href="{{ url_for('page_404') }}" class="btn btn-secondary w-100"><i class="bi bi-arrow-left-right me-1"></i> Transfer</a>
-                </div>
-            </div>
-
-            <!-- Spending Chart -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <h5 class="fw-semibold text-dark">Spending Overview</h5>
-                    <canvas id="spendingChart" height="100"></canvas>
-                </div>
-            </div>
-
-            <!-- Transactions -->
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="fw-semibold text-dark">Recent Transactions</h5>
-                    {% if transactions %}
-                        <div class="table-responsive">
-                            <table class="table mt-3 table-hover">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Type</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for tx in transactions %}
-                                    <tr>
-                                        <td>{{ tx.date }}</td>
-                                        <td>{{ tx.type }}</td>
-                                        <td>${{ tx.amount }}</td>
-                                        <td>
-                                            <span class="badge 
-                                                {% if tx.status == 'Completed' %} bg-success
-                                                {% elif tx.status == 'Pending' %} bg-warning text-dark
-                                                {% else %} bg-danger
-                                                {% endif %}">
-                                                {{ tx.status }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p class="text-muted mt-3">No transactions found.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
-</div>
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const ctx = document.getElementById('spendingChart').getContext('2d');
-    const spendingChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Expenses',
-                data: [500, 300, 400, 700, 200, 600],
-                borderColor: '#3e3e3f',
-                backgroundColor: 'rgba(62,62,63,0.2)',
-                tension: 0.4
-            }, {
-                label: 'Deposits',
-                data: [700, 500, 600, 800, 400, 900],
-                borderColor: '#358a9f',
-                backgroundColor: 'rgba(53,138,159,0.2)',
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } }
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Sample data - in production, this would come from your backend API
+        const userData = {
+            username: "John Doe",
+            balance: "2,450.75",
+            currency: "USD",
+            transactions: [
+                { date: "2024-01-15", type: "Deposit", amount: "1,000.00", status: "Completed" },
+                { date: "2024-01-14", type: "Withdrawal", amount: "500.00", status: "Completed" },
+                { date: "2024-01-13", type: "Deposit", amount: "2,000.00", status: "Pending" },
+                { date: "2024-01-12", type: "Transfer", amount: "150.00", status: "Completed" },
+                { date: "2024-01-11", type: "Withdrawal", amount: "300.00", status: "Failed" }
+            ]
+        };
+
+        // Update UI with user data
+        document.getElementById('username').textContent = userData.username;
+        document.getElementById('balance').textContent = userData.balance;
+        document.getElementById('currency').textContent = userData.currency;
+
+        // Render transactions table
+        function renderTransactions(transactions) {
+            const container = document.getElementById('transactions-container');
+            
+            if (transactions && transactions.length > 0) {
+                let html = `
+                    <div class="table-responsive">
+                        <table class="table mt-3 table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                transactions.forEach(tx => {
+                    const statusClass = 
+                        tx.status === 'Completed' ? 'bg-success' :
+                        tx.status === 'Pending' ? 'bg-warning text-dark' : 'bg-danger';
+                    
+                    html += `
+                        <tr>
+                            <td>${tx.date}</td>
+                            <td>${tx.type}</td>
+                            <td>$${tx.amount}</td>
+                            <td>
+                                <span class="badge ${statusClass}">${tx.status}</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p class="text-muted mt-3">No transactions found.</p>';
+            }
         }
-    });
-</script>
-{% endblock %}
+
+        // Initialize transactions
+        renderTransactions(userData.transactions);
+
+        // Initialize chart
+        const ctx = document.getElementById('spendingChart').getContext('2d');
+        const spendingChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Expenses',
+                    data: [500, 300, 400, 700, 200, 600],
+                    borderColor: '#3e3e3f',
+                    backgroundColor: 'rgba(62,62,63,0.2)',
+                    tension: 0.4
+                }, {
+                    label: 'Deposits',
+                    data: [700, 500, 600, 800, 400, 900],
+                    borderColor: '#358a9f',
+                    backgroundColor: 'rgba(53,138,159,0.2)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        // Function to fetch real data from backend (when backend is deployed)
+        async function fetchDashboardData() {
+            try {
+                // This will work after you deploy your backend to PythonAnywhere
+                const response = await fetch('https://your-backend.pythonanywhere.com/api/dashboard');
+                const data = await response.json();
+                
+                // Update UI with real data
+                document.getElementById('username').textContent = data.username;
+                document.getElementById('balance').textContent = data.balance;
+                document.getElementById('currency').textContent = data.currency;
+                renderTransactions(data.transactions);
+                
+            } catch (error) {
+                console.log('Using sample data - backend not available yet');
+                // Keep using sample data if backend is not available
+            }
+        }
+
+        // Uncomment this when your backend is deployed:
+        // fetchDashboardData();
+    </script>
+</body>
+</html>
