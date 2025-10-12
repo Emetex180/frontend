@@ -8,27 +8,29 @@
     <!-- ✅ Google Fonts can stay as-is -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
 
-    <!-- ✅ UPDATED: Changed Flask url_for to direct static paths -->
-    <link rel="stylesheet" href="/static/fonts/icomoon/style.css">
+<!-- ✅ Local files need to use url_for('static', filename='...') -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/icomoon/style.css') }}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/jquery-ui.css">
-    <link rel="stylesheet" href="/static/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="/static/css/jquery.fancybox.min.css">
-    <link rel="stylesheet" href="/static/css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="/static/fonts/flaticon/font/flaticon.css">
-    <link rel="stylesheet" href="/static/css/aos.css">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.fancybox.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datepicker.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/flaticon/font/flaticon.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/aos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-     <!-- Favicon links - UPDATED -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
-  <link rel="manifest" href="/static/site.webmanifest">
-  <link rel="shortcut icon" href="/static/favicon.ico">
+     <!-- Favicon links -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+
     
   </head>
   <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
@@ -53,11 +55,7 @@
       <div class="site-mobile-menu-body"></div>
     </div>
    
-    <!-- UPDATED: Include translator as direct HTML -->
-    <div id="translator-container">
-      <!-- Content from translator.html will be loaded here -->
-    </div>
-
+    {% include "translator.html" %}
     <header class="site-navbar js-sticky-header site-navbar-target" role="banner">
 
       <div class="container">
@@ -70,12 +68,11 @@
             <nav class="site-navigation position-relative text-right" role="navigation">
 
               <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
-                <!-- UPDATED: Changed Flask routes to direct HTML files -->
-                <li><a href="login.html" class="nav-link">Login</a></li>
+                <li><a href="{{ url_for('login') }}" class="nav-link">Login</a></li>
                 <li class="has-children">
                   <a href="#about-section" class="nav-link">About Us</a>
                   <ul class="dropdown">
-                    <li><a href="payment.html" class="nav-link">Payment</a></li>
+                    <li><a href="{{ url_for('payment') }}" class="nav-link">Payment</a></li>
                     <li><a href="#pricing-section" class="nav-link">Pricing</a></li>
                     <li><a href="#faq-section" class="nav-link">FAQ</a></li>
                     <li><a href="#gallery-section" class="nav-link">Gallery</a></li>
@@ -92,15 +89,16 @@
                   </ul>
                 </li>
                 
-                <!-- UPDATED: Changed Flask routes to direct HTML files -->
-                <li><a href="register.html" class="nav-link">Register</a></li>
-                <li><a href="recover.html" class="nav-link">Recovery</a></li>
+                
+                <li><a href="{{ url_for('register') }}" class="nav-link">Register</a></li>
+                <li><a href="{{ url_for('recover') }}" class="nav-link">Recovery</a></li>
                 <li class="social"><a href="#contact-section" class="nav-link"><span class="icon-facebook"></span></a></li>
                 <li class="social"><a href="#contact-section" class="nav-link"><span class="icon-twitter"></span></a></li>
                 <li class="social"><a href="#contact-section" class="nav-link"><span class="icon-linkedin"></span></a></li>
               </ul>
             </nav>
           </div>
+
 
         <div class="col-6 d-inline-block d-xl-none ml-md-0 py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle float-right"><span class="icon-menu h3"></span></a></div>
 
@@ -111,8 +109,10 @@
 
   
      
-    <!-- UPDATED: Changed image path -->
     <div class="site-blocks-cover overlay" style="background-image: url('/static/images/hero_2.jpg');" data-aos="fade" id="home-section">
+
+
+
 
       <div class="container">
         <div class="row align-items-center justify-content-center">
@@ -130,7 +130,8 @@
 
               <div class="slide">
                 <h1 class="text-uppercase" data-aos="fade-up">Financing Solutions</h1>
-                <p class="mb-5 desc" data-aos="fade-up" data-aos-delay="100">Smart financial solutions designed to help you save, grow, and secure your future with ease</p>
+                <p class="mb-5 desc" data-aos="fade-up" data-aos-delay="100">Smart financial solutions designed to help you"
+                  save, grow, and secure your future with ease</p>
                 <div data-aos="fade-up" data-aos-delay="100">
                   <a href="#" target="_blank" class="btn  btn-primary mr-2 mb-2">Get In Touch</a>
                 </div>
@@ -138,7 +139,8 @@
 
               <div class="slide">
                 <h1 class="text-uppercase" data-aos="fade-up">Savings Accounts</h1>
-                <p class="mb-5 desc" data-aos="fade-up" data-aos-delay="100">Build your financial future with a secure savings account. Enjoy competitive interest rates, flexibility, and peace of mind as your money grows</p>
+                <p class="mb-5 desc" data-aos="fade-up" data-aos-delay="100">Build your financial future with a secure savings account. Enjoy competitive interest rates, flexibility,
+                   and peace of mind as your money grows</p>
                 <div data-aos="fade-up" data-aos-delay="100">
                   <a href="#" target="_blank" class="btn  btn-primary mr-2 mb-2">Get In Touch</a>
                 </div>
@@ -156,11 +158,7 @@
         </span>
       </a>
     </div>  
-
-    <!-- UPDATED: Include crypto carousel as direct HTML -->
-    <div id="crypto-carousel-container">
-      <!-- Content from crypto_carousel.html will be loaded here -->
-    </div>
+   {% include "crypto_carousel.html" %}
 
     
     <div class="site-section cta-big-image" id="about-section">
@@ -174,15 +172,14 @@
         <div class="row">
           <div class="col-lg-6 mb-5" data-aos="fade-up" data-aos-delay="">
             <figure class="circle-bg">
-              <!-- UPDATED: Changed image path -->
-              <img src="/static/images/img_2.jpg" alt="Banking App Dashboard Preview" class="img-fluid rounded shadow-sm" loading="lazy">
+            <img src="{{ url_for('static', filename='images/img_2.jpg') }}" alt="Banking App Dashboard Preview" class="img-fluid rounded shadow-sm" loading="lazy">
             </figure>
           </div>
           <div class="col-lg-5 ml-auto" data-aos="fade-up" data-aos-delay="100">
             
             <h3 class="text-black mb-4">We Solve Your Financial Problem</h3>
 
-            <p>We understand that financial challenges can be overwhelming, whether it's managing debt, planning for the future, or finding the right investment path. That's why we provide clear, practical, and personalized solutions to help you take control of your finances.</p>
+            <p>We understand that financial challenges can be overwhelming, whether it’s managing debt, planning for the future, or finding the right investment path. That’s why we provide clear, practical, and personalized solutions to help you take control of your finances.</p>
 
             <p>Our goal is to remove the stress of money management, giving you confidence, stability, and the freedom to focus on what truly matters.</p>
             
@@ -191,8 +188,6 @@
         
       </div>  
     </div>
-
-    <!-- CONTINUED: I'll show the rest of the updates... -->
 
     <div class="site-section" id="next">
       <div class="container">
