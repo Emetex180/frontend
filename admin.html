@@ -310,21 +310,58 @@
 <script>
   const API_BASE = 'https://wellking.pythonanywhere.com/api';
   let users = [];
+  let authToken = localStorage.getItem('token');
 
   // Check if user is admin
   document.addEventListener('DOMContentLoaded', function() {
-    const username = localStorage.getItem('username');
-    if (username !== 'admin') {
+    if (!authToken) {
+      showAlert('Please login first', 'warning');
       window.location.href = 'login.html';
       return;
     }
-    loadUsers();
+    checkAdminAccess();
   });
+
+  // Check admin access
+  async function checkAdminAccess() {
+    try {
+      const response = await fetch(`${API_BASE}/check-auth`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.status !== 'success' || data.user !== 'admin') {
+        showAlert('Access denied: Admin privileges required', 'danger');
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      loadUsers();
+    } catch (error) {
+      console.error('Auth check error:', error);
+      showAlert('Authentication failed', 'danger');
+      window.location.href = 'login.html';
+    }
+  }
 
   // Load users from API
   async function loadUsers() {
     try {
-      const response = await fetch(`${API_BASE}/admin/users`);
+      const response = await fetch(`${API_BASE}/admin/users`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      
+      if (response.status === 403) {
+        showAlert('Access denied: Admin privileges required', 'danger');
+        window.location.href = 'login.html';
+        return;
+      }
+      
       const data = await response.json();
       
       if (data.status === 'success') {
@@ -355,7 +392,7 @@
       row.innerHTML = `
         <td>${user.id}</td>
         <td>${user.username}</td>
-        <td>$${user.balance || '0.00'}</td>
+        <td>$${user.balance ? parseFloat(user.balance).toFixed(2) : '0.00'}</td>
         <td>
           <button class="btn btn-sm btn-outline-primary" onclick="quickSend(${user.id})">
             <i class="bi bi-plus-circle"></i> Add Funds
@@ -377,7 +414,7 @@
     users.forEach(user => {
       const option = document.createElement('option');
       option.value = user.id;
-      option.textContent = `${user.username} (Balance: $${user.balance || '0.00'})`;
+      option.textContent = `${user.username} (Balance: $${user.balance ? parseFloat(user.balance).toFixed(2) : '0.00'})`;
       
       sendSelect.appendChild(option.cloneNode(true));
       withdrawSelect.appendChild(option);
@@ -409,6 +446,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
         },
         body: JSON.stringify({
           user_id: userId,
@@ -462,6 +500,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
         },
         body: JSON.stringify({
           user_id: userId,
@@ -530,15 +569,10 @@
   }
 
   // Logout function
-  document.getElementById('logoutBtn').addEventListener('click', async function() {
-    try {
-      await fetch(`${API_BASE}/logout`);
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      localStorage.clear();
-      window.location.href = 'login.html';
-    }
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    window.location.href = 'login.html';
   });
 </script>
 
