@@ -123,6 +123,11 @@
     text-decoration: underline;
   }
 
+  .alert {
+    border-radius: 10px;
+    border: none;
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -167,7 +172,10 @@
 
     <h2>Login</h2>
 
-    <form method="post">
+    <!-- Alert Messages -->
+    <div id="alertContainer"></div>
+
+    <form id="loginForm">
       <!-- Username -->
       <div class="mb-3">
         <label for="username" class="form-label">Username</label>
@@ -182,7 +190,12 @@
       </div>
 
       <!-- Submit -->
-      <button type="submit" class="btn btn-custom w-100 shadow-sm">Login</button>
+      <button type="submit" class="btn btn-custom w-100 shadow-sm" id="loginBtn">
+        <span id="loginText">Login</span>
+        <div id="loginSpinner" class="spinner-border spinner-border-sm d-none" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </button>
     </form>
 
     <!-- Register link -->
@@ -210,6 +223,104 @@
     password.type = type;
     togglePassword.classList.toggle('bi-eye');
     togglePassword.classList.toggle('bi-eye-slash');
+  });
+</script>
+
+<!-- Login API Script -->
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const loginBtn = document.getElementById('loginBtn');
+    const loginText = document.getElementById('loginText');
+    const loginSpinner = document.getElementById('loginSpinner');
+    const alertContainer = document.getElementById('alertContainer');
+    
+    // Show loading state
+    loginText.textContent = 'Logging in...';
+    loginSpinner.classList.remove('d-none');
+    loginBtn.disabled = true;
+    
+    // Clear previous alerts
+    alertContainer.innerHTML = '';
+    
+    try {
+      const response = await fetch('https://wellking.pythonanywhere.com/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        // Show success message
+        alertContainer.innerHTML = `
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> Login successful! Redirecting...
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        `;
+        
+        // Store user data in localStorage
+        if (data.user_data) {
+          localStorage.setItem('user', JSON.stringify(data.user_data));
+        }
+        localStorage.setItem('username', data.user);
+        
+        // Redirect based on user type
+        setTimeout(() => {
+          if (data.user === 'admin') {
+            window.location.href = 'admin.html';
+          } else {
+            window.location.href = 'dashboard.html';
+          }
+        }, 1500);
+        
+      } else {
+        // Show error message
+        alertContainer.innerHTML = `
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> ${data.message || 'Login failed!'}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        `;
+      }
+      
+    } catch (error) {
+      // Show network error
+      alertContainer.innerHTML = `
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i> Network error: Could not connect to server
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+      console.error('Login error:', error);
+    } finally {
+      // Reset button state
+      loginText.textContent = 'Login';
+      loginSpinner.classList.add('d-none');
+      loginBtn.disabled = false;
+    }
+  });
+
+  // Check if user is already logged in
+  document.addEventListener('DOMContentLoaded', function() {
+    const username = localStorage.getItem('username');
+    if (username) {
+      if (username === 'admin') {
+        window.location.href = 'admin.html';
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    }
   });
 </script>
 
