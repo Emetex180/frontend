@@ -128,6 +128,11 @@
     box-shadow: 0 6px 15px rgba(53, 138, 159, 0.3);
   }
 
+  .btn-custom:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
   .login-link {
     text-align: center;
     margin-top: 18px;
@@ -142,6 +147,12 @@
 
   .login-link a:hover {
     text-decoration: underline;
+  }
+
+  .alert {
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
   }
 
   @keyframes fadeIn {
@@ -186,7 +197,11 @@
     </div>
 
     <h2>Create Account</h2>
-    <form method="post">
+    
+    <!-- Alert Container -->
+    <div id="alertContainer"></div>
+
+    <form id="registerForm">
       <!-- Username -->
       <div class="mb-3">
         <label for="username" class="form-label">Username</label>
@@ -231,7 +246,12 @@
       </div>
 
       <!-- Submit -->
-      <button type="submit" class="btn-custom">Register</button>
+      <button type="submit" class="btn-custom" id="registerBtn">
+        <span id="registerText">Register</span>
+        <div id="registerSpinner" class="spinner-border spinner-border-sm d-none" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </button>
     </form>
 
     <!-- Login link -->
@@ -257,6 +277,106 @@
     password.type = type;
     togglePassword.classList.toggle('bi-eye');
     togglePassword.classList.toggle('bi-eye-slash');
+  });
+</script>
+
+<!-- Register API Script -->
+<script>
+  document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = {
+      username: document.getElementById('username').value,
+      password: document.getElementById('password').value,
+      first_name: document.getElementById('first_name').value,
+      last_name: document.getElementById('last_name').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      address: document.getElementById('address').value
+    };
+    
+    const registerBtn = document.getElementById('registerBtn');
+    const registerText = document.getElementById('registerText');
+    const registerSpinner = document.getElementById('registerSpinner');
+    const alertContainer = document.getElementById('alertContainer');
+    
+    // Show loading state
+    registerText.textContent = 'Creating Account...';
+    registerSpinner.classList.remove('d-none');
+    registerBtn.disabled = true;
+    
+    // Clear previous alerts
+    alertContainer.innerHTML = '';
+    
+    try {
+      const response = await fetch('https://wellking.pythonanywhere.com/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        // Show success message
+        alertContainer.innerHTML = `
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> ${data.message} Redirecting to login...
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        `;
+        
+        // Store username for auto-login if needed
+        localStorage.setItem('newUser', formData.username);
+        
+        // Redirect to login page after successful registration
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        
+      } else {
+        // Show error message
+        alertContainer.innerHTML = `
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> ${data.message || 'Registration failed!'}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        `;
+      }
+      
+    } catch (error) {
+      // Show network error
+      alertContainer.innerHTML = `
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i> Network error: Could not connect to server. Please try again.
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+      console.error('Registration error:', error);
+    } finally {
+      // Reset button state
+      registerText.textContent = 'Register';
+      registerSpinner.classList.add('d-none');
+      registerBtn.disabled = false;
+    }
+  });
+
+  // Auto-fill username if coming from registration
+  document.addEventListener('DOMContentLoaded', function() {
+    const newUser = localStorage.getItem('newUser');
+    if (newUser) {
+      document.getElementById('username').value = newUser;
+      localStorage.removeItem('newUser'); // Clean up
+    }
+    
+    // Check if user is already logged in
+    const currentUser = localStorage.getItem('username');
+    if (currentUser && currentUser !== 'admin') {
+      window.location.href = 'dashboard.html';
+    }
   });
 </script>
 
