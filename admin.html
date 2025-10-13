@@ -1,15 +1,56 @@
-{% extends 'base.html' %}
-
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - Global Rise Blockchain</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+    <link rel="manifest" href="/static/site.webmanifest">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    
 <style>
   body {
     background: #f4f7fb;
     font-family: 'Segoe UI', sans-serif;
   }
 
+  .navbar {
+    background: linear-gradient(90deg, #358a9f, #2f2f30);
+    padding: 0.7rem 1rem;
+  }
+  .navbar-brand img {
+    height: 55px;
+    transition: transform 0.2s ease;
+  }
+  .navbar-brand img:hover {
+    transform: scale(1.05);
+  }
+  .nav-link {
+    color: #f8f9fa !important;
+    margin: 0 6px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: background 0.3s;
+  }
+  .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
   .admin-header {
     text-align: center;
     margin-bottom: 40px;
+    padding: 20px;
   }
 
   .admin-header h2 {
@@ -30,6 +71,7 @@
     gap: 30px;
     margin: 0 auto;
     max-width: 1100px;
+    padding: 20px;
   }
 
   .admin-card {
@@ -101,52 +143,404 @@
     transform: translateY(-3px);
   }
 
+  .glow-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .alert {
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 20px;
+  }
+
+  .users-table {
+    background: #fff;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    margin: 20px auto;
+    max-width: 1100px;
+  }
+
+  .users-table h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #34495e;
+    text-align: center;
+  }
+
+  .table {
+    margin-bottom: 0;
+  }
+
+  .table th {
+    background: linear-gradient(135deg, #358a9f, #2f2f30);
+    color: white;
+    border: none;
+    padding: 15px;
+  }
+
+  .table td {
+    padding: 15px;
+    vertical-align: middle;
+    border-color: #f0f0f0;
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
 </style>
+</head>
+<body>
 
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center text-white" href="index.html">
+            <img src="/static/GB LOGO.png" alt="Logo">
+            <span class="ms-2">Global Rise Blockchain</span>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house-door"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Admin Content -->
 <div class="admin-header">
   <h2>⚙️ Admin Management Panel</h2>
   <p>Manage client balances, withdrawals, and transfers efficiently.</p>
+</div>
+
+<!-- Alert Container -->
+<div id="alertContainer" class="container" style="max-width: 1100px;"></div>
+
+<!-- Users Table -->
+<div class="users-table">
+  <h3>👥 Registered Users</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Balance</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody">
+        <tr>
+          <td colspan="4" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading users...</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <div class="admin-container">
   <!-- Send Money Form -->
   <div class="admin-card">
     <h3>💸 Send Money</h3>
-    <form method="post" action="index.html">
+    <form id="sendMoneyForm">
       <label for="send-user">Select User</label>
       <select name="user_id" id="send-user" required>
-        {% for user in users %}
-          <option value="{{ user.id }}">{{ user.username }} (Balance: ${{ user.balance }})</option>
-        {% endfor %}
+        <option value="">Loading users...</option>
       </select>
 
       <label for="send-amount">Amount</label>
       <input name="amount" id="send-amount" type="number" step="0.01" placeholder="Enter amount" required>
 
-      <button type="submit" name="action" value="send" class="glow-btn">Send Money</button>
+      <button type="submit" class="glow-btn" id="sendBtn">
+        <span id="sendText">Send Money</span>
+        <div id="sendSpinner" class="spinner-border spinner-border-sm d-none" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </button>
     </form>
   </div>
 
   <!-- Withdraw Money Form -->
   <div class="admin-card">
     <h3>🏦 Withdraw Money</h3>
-    <form method="post" action="index.html">
+    <form id="withdrawMoneyForm">
       <label for="withdraw-user">Select User</label>
       <select name="user_id" id="withdraw-user" required>
-        {% for user in users %}
-          <option value="{{ user.id }}">{{ user.username }} (Balance: ${{ user.balance }})</option>
-        {% endfor %}
+        <option value="">Loading users...</option>
       </select>
 
       <label for="withdraw-amount">Amount</label>
       <input name="amount" id="withdraw-amount" type="number" step="0.01" placeholder="Enter amount" required>
 
-      <button type="submit" name="action" value="withdraw" class="glow-btn">Withdraw</button>
+      <button type="submit" class="glow-btn" id="withdrawBtn">
+        <span id="withdrawText">Withdraw</span>
+        <div id="withdrawSpinner" class="spinner-border spinner-border-sm d-none" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </button>
     </form>
   </div>
 </div>
-{% endblock %}
+
+<!-- Footer -->
+<footer class="text-center text-white py-3 mt-5" style="background-color: #1f1f1f;">
+    <p class="mb-0">&copy; 2025 Global Rise Blockchain. All rights reserved.</p>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Admin API Script -->
+<script>
+  const API_BASE = 'https://wellking.pythonanywhere.com/api';
+  let users = [];
+
+  // Check if user is admin
+  document.addEventListener('DOMContentLoaded', function() {
+    const username = localStorage.getItem('username');
+    if (username !== 'admin') {
+      window.location.href = 'login.html';
+      return;
+    }
+    loadUsers();
+  });
+
+  // Load users from API
+  async function loadUsers() {
+    try {
+      const response = await fetch(`${API_BASE}/admin/users`);
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        users = data.users;
+        updateUsersTable();
+        updateUserDropdowns();
+      } else {
+        showAlert('Error loading users: ' + data.message, 'danger');
+      }
+    } catch (error) {
+      showAlert('Network error: Could not load users', 'danger');
+      console.error('Error loading users:', error);
+    }
+  }
+
+  // Update users table
+  function updateUsersTable() {
+    const tbody = document.getElementById('usersTableBody');
+    tbody.innerHTML = '';
+    
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center">No users found</td></tr>';
+      return;
+    }
+    
+    users.forEach(user => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${user.id}</td>
+        <td>${user.username}</td>
+        <td>$${user.balance || '0.00'}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary" onclick="quickSend(${user.id})">
+            <i class="bi bi-plus-circle"></i> Add Funds
+          </button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Update user dropdowns
+  function updateUserDropdowns() {
+    const sendSelect = document.getElementById('send-user');
+    const withdrawSelect = document.getElementById('withdraw-user');
+    
+    sendSelect.innerHTML = '';
+    withdrawSelect.innerHTML = '';
+    
+    users.forEach(user => {
+      const option = document.createElement('option');
+      option.value = user.id;
+      option.textContent = `${user.username} (Balance: $${user.balance || '0.00'})`;
+      
+      sendSelect.appendChild(option.cloneNode(true));
+      withdrawSelect.appendChild(option);
+    });
+  }
+
+  // Send money form
+  document.getElementById('sendMoneyForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const userId = document.getElementById('send-user').value;
+    const amount = document.getElementById('send-amount').value;
+    const sendBtn = document.getElementById('sendBtn');
+    const sendText = document.getElementById('sendText');
+    const sendSpinner = document.getElementById('sendSpinner');
+    
+    if (!userId || !amount) {
+      showAlert('Please select a user and enter amount', 'warning');
+      return;
+    }
+    
+    // Show loading
+    sendText.textContent = 'Sending...';
+    sendSpinner.classList.remove('d-none');
+    sendBtn.disabled = true;
+    
+    try {
+      const response = await fetch(`${API_BASE}/admin/update-balance`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          amount: parseFloat(amount),
+          action: 'send'
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        showAlert(`Successfully sent $${amount} to user`, 'success');
+        document.getElementById('send-amount').value = '';
+        loadUsers(); // Refresh user data
+      } else {
+        showAlert('Error: ' + data.message, 'danger');
+      }
+    } catch (error) {
+      showAlert('Network error: Could not process request', 'danger');
+      console.error('Send money error:', error);
+    } finally {
+      // Reset button
+      sendText.textContent = 'Send Money';
+      sendSpinner.classList.add('d-none');
+      sendBtn.disabled = false;
+    }
+  });
+
+  // Withdraw money form
+  document.getElementById('withdrawMoneyForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const userId = document.getElementById('withdraw-user').value;
+    const amount = document.getElementById('withdraw-amount').value;
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    const withdrawText = document.getElementById('withdrawText');
+    const withdrawSpinner = document.getElementById('withdrawSpinner');
+    
+    if (!userId || !amount) {
+      showAlert('Please select a user and enter amount', 'warning');
+      return;
+    }
+    
+    // Show loading
+    withdrawText.textContent = 'Withdrawing...';
+    withdrawSpinner.classList.remove('d-none');
+    withdrawBtn.disabled = true;
+    
+    try {
+      const response = await fetch(`${API_BASE}/admin/update-balance`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          amount: parseFloat(amount),
+          action: 'withdraw'
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        showAlert(`Successfully withdrew $${amount} from user`, 'success');
+        document.getElementById('withdraw-amount').value = '';
+        loadUsers(); // Refresh user data
+      } else {
+        showAlert('Error: ' + data.message, 'danger');
+      }
+    } catch (error) {
+      showAlert('Network error: Could not process request', 'danger');
+      console.error('Withdraw money error:', error);
+    } finally {
+      // Reset button
+      withdrawText.textContent = 'Withdraw';
+      withdrawSpinner.classList.add('d-none');
+      withdrawBtn.disabled = false;
+    }
+  });
+
+  // Quick send function
+  function quickSend(userId) {
+    const user = users.find(u => u.id == userId);
+    if (user) {
+      document.getElementById('send-user').value = userId;
+      document.getElementById('send-amount').focus();
+      showAlert(`Selected user: ${user.username}. Enter amount to send.`, 'info');
+    }
+  }
+
+  // Show alert function
+  function showAlert(message, type) {
+    const alertContainer = document.getElementById('alertContainer');
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type} alert-dismissible fade show`;
+    alert.innerHTML = `
+      <i class="bi bi-${getAlertIcon(type)}"></i> ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    alertContainer.appendChild(alert);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      if (alert.parentNode) {
+        alert.remove();
+      }
+    }, 5000);
+  }
+
+  function getAlertIcon(type) {
+    const icons = {
+      'success': 'check-circle-fill',
+      'danger': 'exclamation-triangle-fill',
+      'warning': 'exclamation-triangle-fill',
+      'info': 'info-circle-fill'
+    };
+    return icons[type] || 'info-circle-fill';
+  }
+
+  // Logout function
+  document.getElementById('logoutBtn').addEventListener('click', async function() {
+    try {
+      await fetch(`${API_BASE}/logout`);
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    }
+  });
+</script>
+
+</body>
+</html>
