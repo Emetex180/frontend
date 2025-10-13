@@ -252,6 +252,8 @@
                     <span id="errorText">Failed to load dashboard data</span>
                     <br>
                     <button class="btn btn-primary mt-2" onclick="loadDashboardData()">Try Again</button>
+                    <br>
+                    <small class="text-muted mt-2" id="debugInfo"></small>
                 </div>
             </div>
         </main>
@@ -273,10 +275,15 @@
   // Check authentication and load data
   document.addEventListener('DOMContentLoaded', function() {
     const username = localStorage.getItem('username');
+    console.log('🔍 Checking authentication - Username:', username);
+    
     if (!username || username === 'admin') {
+      console.log('🚫 Not authenticated, redirecting to login...');
       window.location.href = 'login.html';
       return;
     }
+    
+    console.log('✅ User authenticated, loading dashboard...');
     loadDashboardData();
   });
 
@@ -285,6 +292,7 @@
     const loadingSpinner = document.getElementById('loadingSpinner');
     const dashboardContent = document.getElementById('dashboardContent');
     const errorMessage = document.getElementById('errorMessage');
+    const debugInfo = document.getElementById('debugInfo');
     
     // Show loading, hide others
     loadingSpinner.classList.remove('d-none');
@@ -292,27 +300,49 @@
     errorMessage.classList.add('d-none');
     
     try {
-      const response = await fetch(`${API_BASE}/dashboard`);
+      console.log('📡 Fetching dashboard data from:', `${API_BASE}/dashboard`);
+      
+      const response = await fetch(`${API_BASE}/dashboard`, {
+        credentials: 'include', // This is CRITICAL for session cookies
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
+      
+      console.log('📨 API Response status:', response.status);
+      
       const data = await response.json();
+      console.log('📊 Dashboard API response:', data);
       
       if (data.status === 'success') {
         // Update dashboard with real data
         updateDashboard(data.user_data);
         loadingSpinner.classList.add('d-none');
         dashboardContent.classList.remove('d-none');
+        console.log('✅ Dashboard loaded successfully');
       } else {
+        // If API says not logged in, clear localStorage and redirect
+        if (data.message && data.message.includes('Not logged in')) {
+          console.log('🚫 API says not logged in, redirecting...');
+          localStorage.clear();
+          window.location.href = 'login.html';
+          return;
+        }
         throw new Error(data.message || 'Failed to load dashboard');
       }
     } catch (error) {
-      console.error('Dashboard error:', error);
+      console.error('❌ Dashboard error:', error);
       loadingSpinner.classList.add('d-none');
       errorMessage.classList.remove('d-none');
       document.getElementById('errorText').textContent = error.message;
+      debugInfo.textContent = `Error details: ${error.message}. Check console for more info.`;
     }
   }
 
   // Update dashboard with user data
   function updateDashboard(userData) {
+    console.log('🎯 Updating dashboard with:', userData);
+    
     // Welcome message
     document.getElementById('welcomeMessage').textContent = `Welcome, ${userData.username}`;
     
@@ -382,8 +412,11 @@
 
   // Logout function
   document.getElementById('logoutBtn').addEventListener('click', async function() {
+    console.log('🚪 Logging out...');
     try {
-      await fetch(`${API_BASE}/logout`);
+      await fetch(`${API_BASE}/logout`, {
+        credentials: 'include'
+      });
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
