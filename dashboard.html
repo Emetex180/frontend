@@ -306,17 +306,28 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Dashboard API Script -->
+<!-- Dashboard API Script - UPDATED FOR TOKEN AUTH -->
 <script>
   const API_BASE = 'https://wellking.pythonanywhere.com/api';
   let lastUpdateTime = null;
 
+  // Get authorization header for token-based auth
+  function getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+  }
+
   // Check authentication and load data
   document.addEventListener('DOMContentLoaded', function() {
     const username = localStorage.getItem('username');
-    console.log('🔍 Checking authentication - Username:', username);
+    const token = localStorage.getItem('token');
     
-    if (!username || username === 'admin') {
+    console.log('🔍 Checking authentication - Username:', username, 'Token exists:', !!token);
+    
+    if (!username || !token) {
       console.log('🚫 Not authenticated, redirecting to login...');
       showError('Not logged in', 'Please login to access your dashboard', 'Redirecting to login...');
       setTimeout(() => window.location.href = 'login.html', 2000);
@@ -328,7 +339,7 @@
     loadDashboardData();
   });
 
-  // Load dashboard data from API
+  // Load dashboard data from API - UPDATED FOR TOKEN AUTH
   async function loadDashboardData() {
     const loadingSpinner = document.getElementById('loadingSpinner');
     const dashboardContent = document.getElementById('dashboardContent');
@@ -342,34 +353,20 @@
     loadingDetails.textContent = 'Connecting to server...';
     
     try {
-      console.log('📡 Fetching dashboard data from:', `${API_BASE}/dashboard`);
+      console.log('📡 Fetching dashboard data with token...');
       loadingDetails.textContent = 'Fetching user data...';
       
-      // Test connection first
-      const testResponse = await fetch(`${API_BASE}/test`, {
-        method: 'GET',
-        credentials: 'include'
-      });
-      
-      if (!testResponse.ok) {
-        throw new Error(`Server test failed: ${testResponse.status}`);
-      }
-      
-      // Get dashboard data
+      // Get dashboard data with token authentication
       const response = await fetch(`${API_BASE}/dashboard`, {
         method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        }
+        headers: getAuthHeaders()
       });
       
       console.log('📨 Dashboard response status:', response.status, response.ok);
       loadingDetails.textContent = 'Processing data...';
       
       if (response.status === 401 || response.status === 403) {
-        // Session expired or not logged in
+        // Token expired or invalid
         localStorage.clear();
         showError('Session Expired', 'Your session has expired. Please login again.', 'Redirecting to login...');
         setTimeout(() => window.location.href = 'login.html', 2000);
@@ -399,7 +396,7 @@
     } catch (error) {
       console.error('❌ Dashboard error:', error);
       loadingSpinner.classList.add('d-none');
-      showError('Connection Failed', error.message, `Failed to connect to: ${API_BASE}`);
+      showError('Connection Failed', error.message, `Failed to load dashboard data`);
     }
   }
 
@@ -527,14 +524,15 @@
     }
   }
 
-  // Check session status
+  // Check session status - UPDATED FOR TOKEN AUTH
   async function checkSessionStatus() {
     try {
       const response = await fetch(`${API_BASE}/check-auth`, {
-        credentials: 'include'
+        method: 'GET',
+        headers: getAuthHeaders()
       });
       const data = await response.json();
-      alert(`Session Status: ${data.status}\nUser: ${data.user || 'None'}`);
+      alert(`Session Status: ${data.status}\nUser: ${data.user || 'None'}\nAuthenticated: ${data.authenticated || 'No'}`);
     } catch (error) {
       alert('Failed to check session status: ' + error.message);
     }
@@ -567,21 +565,13 @@
     updateUserStatus('Demo Mode');
   }
 
-  // Logout function
-  document.getElementById('logoutBtn').addEventListener('click', async function() {
+  // Logout function - UPDATED FOR TOKEN AUTH
+  document.getElementById('logoutBtn').addEventListener('click', function() {
     console.log('🚪 Logging out...');
     if (confirm('Are you sure you want to logout?')) {
-      try {
-        await fetch(`${API_BASE}/logout`, {
-          method: 'POST',
-          credentials: 'include'
-        });
-      } catch (error) {
-        console.error('Logout error:', error);
-      } finally {
-        localStorage.clear();
-        window.location.href = 'login.html';
-      }
+      // For token-based auth, we just clear localStorage
+      localStorage.clear();
+      window.location.href = 'login.html';
     }
   });
 

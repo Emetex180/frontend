@@ -84,7 +84,6 @@
                 
                 const response = await fetch(`${API_BASE}/test`, {
                     method: 'GET',
-                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' }
                 });
 
@@ -101,7 +100,7 @@
             }
         }
 
-        // Login function
+        // Login function - UPDATED FOR TOKEN AUTH
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -113,7 +112,7 @@
             const alertContainer = document.getElementById('alertContainer');
             
             // Show loading
-            loginText.textContent = 'Connecting...';
+            loginText.textContent = 'Logging in...';
             loginSpinner.classList.remove('d-none');
             loginBtn.disabled = true;
             alertContainer.innerHTML = '';
@@ -123,7 +122,6 @@
                 
                 const response = await fetch(`${API_BASE}/login`, {
                     method: 'POST',
-                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -147,13 +145,15 @@
                         </div>
                     `;
                     
-                    // Store user data
+                    // Store user data AND TOKEN
                     localStorage.setItem('username', data.user);
+                    localStorage.setItem('token', data.token); // Store the JWT token
+                    
                     if (data.user_data) {
                         localStorage.setItem('user', JSON.stringify(data.user_data));
                     }
                     
-                    // Redirect
+                    // Redirect based on user type
                     setTimeout(() => {
                         if (data.user === 'admin') {
                             window.location.href = 'admin.html';
@@ -171,9 +171,9 @@
                 alertContainer.innerHTML = `
                     <div class="alert alert-danger">
                         <i class="bi bi-exclamation-triangle-fill"></i> 
-                        <strong>Connection Error</strong><br>
+                        <strong>Login Error</strong><br>
                         ${error.message}<br>
-                        <small>Make sure your backend is running on PythonAnywhere</small>
+                        <small>Please check your credentials and try again</small>
                     </div>
                 `;
             } finally {
@@ -184,17 +184,55 @@
             }
         });
 
-        // Check existing session on page load
+        // Check existing session on page load - UPDATED FOR TOKEN AUTH
         document.addEventListener('DOMContentLoaded', function() {
             const username = localStorage.getItem('username');
-            if (username) {
-                console.log('Found existing user:', username);
-                // Don't auto-redirect, let user choose to login again
-            }
+            const token = localStorage.getItem('token');
             
-            // Test connection automatically
-            setTimeout(testConnection, 1000);
+            if (username && token) {
+                console.log('Found existing user and token:', username);
+                
+                // Verify token is still valid before auto-redirecting
+                fetch(`${API_BASE}/check-auth`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && data.authenticated) {
+                        console.log('Token is valid, auto-redirecting...');
+                        // Token is valid, redirect
+                        if (username === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'dashboard.html';
+                        }
+                    } else {
+                        // Token invalid, clear storage
+                        console.log('Token invalid, clearing storage');
+                        localStorage.clear();
+                    }
+                })
+                .catch(error => {
+                    console.log('Token check failed:', error);
+                    localStorage.clear();
+                });
+            } else {
+                console.log('No valid session found, showing login page');
+                // Test connection automatically
+                setTimeout(testConnection, 1000);
+            }
         });
+
+        // Clear any existing session if user wants to login fresh
+        function clearSession() {
+            localStorage.clear();
+            alert('Session cleared. Please login again.');
+            window.location.reload();
+        }
     </script>
 </body>
 </html>
