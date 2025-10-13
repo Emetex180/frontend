@@ -2,94 +2,177 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Global Rise Blockchain</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/style.css">
     
-    <style>
-        .sidebar {
-            min-height: 100vh;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .nav-link {
-            border-radius: 8px;
-            margin: 2px 0;
-            transition: all 0.3s ease;
-        }
-        .nav-link:hover {
-            background-color: rgba(255,255,255,0.1);
-            transform: translateX(5px);
-        }
-        .card {
-            border: none;
-            border-radius: 15px;
-        }
-        .table-hover tbody tr:hover {
-            background-color: rgba(0,0,0,0.02);
-        }
-    </style>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+    <link rel="manifest" href="/static/site.webmanifest">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    
+<style>
+  body {
+    background: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .navbar {
+    background: linear-gradient(90deg, #358a9f, #2f2f30);
+    padding: 0.7rem 1rem;
+  }
+  .navbar-brand img {
+    height: 55px;
+    transition: transform 0.2s ease;
+  }
+  .navbar-brand img:hover {
+    transform: scale(1.05);
+  }
+  .nav-link {
+    color: #f8f9fa !important;
+    margin: 0 6px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: background 0.3s;
+  }
+  .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .sidebar {
+    min-height: calc(100vh - 76px);
+    background: linear-gradient(180deg, #2f2f30, #1f1f1f);
+  }
+
+  .sidebar .nav-link {
+    color: #ddd !important;
+    padding: 12px 20px;
+    margin: 2px 0;
+    border-radius: 8px;
+  }
+
+  .sidebar .nav-link:hover {
+    background: rgba(79, 195, 220, 0.2);
+    color: #4fc3dc !important;
+  }
+
+  .sidebar .nav-link.active {
+    background: rgba(79, 195, 220, 0.3);
+    color: #4fc3dc !important;
+    font-weight: 600;
+  }
+
+  .card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  .main-content {
+    background: #f8f9fa;
+    min-height: calc(100vh - 76px);
+  }
+</style>
 </head>
 <body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
     <div class="container-fluid">
-        <div class="row">
+        <a class="navbar-brand d-flex align-items-center text-white" href="index.html">
+            <img src="/static/GB LOGO.png" alt="Logo">
+            <span class="ms-2">Global Rise Blockchain</span>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house-door"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-            <!-- Offcanvas Sidebar (Mobile like Telegram) -->
-            <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="mobileSidebar">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title">Menu</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Offcanvas Sidebar (Mobile like Telegram) -->
+        <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="mobileSidebar">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Menu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="d-flex justify-content-center align-items-center my-4">
+                    <img src="/static/GB LOGO.png" 
+                         alt="Logo" 
+                         style="height: 80px; border-radius: 20px;">
                 </div>
-                <div class="offcanvas-body">
-                    <div class="d-flex justify-content-center align-items-center my-4">
-                        <img src="/static/GB LOGO.png" 
-                             alt="Logo" 
-                             style="height: 80px; border-radius: 20px;">
-                    </div>
-                    <ul class="nav flex-column">
-                        <li class="nav-item"><a class="nav-link text-white" href="404.html"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="https://t.me/crytoxcom"><i class="bi bi-wallet2 me-2"></i> Deposit</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="withdraw.html"><i class="bi bi-cash-coin me-2"></i> Withdraw</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="404.html"><i class="bi bi-receipt me-2"></i> Transactions</a></li>
-                    </ul>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link text-white active" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="payment.html"><i class="bi bi-wallet2 me-2"></i> Deposit</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="withdraw.html"><i class="bi bi-cash-coin me-2"></i> Withdraw</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="404.html"><i class="bi bi-receipt me-2"></i> Transactions</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sidebar (desktop only, always visible) -->
+        <nav class="col-md-3 col-lg-2 d-none d-md-block sidebar">
+            <div class="position-sticky pt-3">
+                <div class="d-flex justify-content-center align-items-center my-4">
+                    <img src="/static/GB LOGO.png" 
+                         alt="Logo" 
+                         style="height: 80px; border-radius: 20px;">
                 </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link active" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="payment.html"><i class="bi bi-wallet2 me-2"></i> Deposit</a></li>
+                    <li class="nav-item"><a class="nav-link" href="withdraw.html"><i class="bi bi-cash-coin me-2"></i> Withdraw</a></li>
+                    <li class="nav-item"><a class="nav-link" href="404.html"><i class="bi bi-receipt me-2"></i> Transactions</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Toggle button for mobile (Telegram style) -->
+        <div class="d-md-none p-2">
+            <button class="btn btn-outline-dark w-100 mb-3" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                <i class="bi bi-list me-1"></i> Menu
+            </button>
+        </div>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 main-content">
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 text-muted">Loading your dashboard...</p>
             </div>
 
-            <!-- Sidebar (desktop only, always visible) -->
-            <nav class="col-md-3 col-lg-2 d-none d-md-block bg-dark text-white sidebar">
-                <div class="position-sticky pt-3">
-                    <div class="d-flex justify-content-center align-items-center my-4">
-                        <img src="/static/GB LOGO.png" 
-                             alt="Logo" 
-                             style="height: 80px; border-radius: 20px;">
-                    </div>
-                    <ul class="nav flex-column">
-                        <li class="nav-item"><a class="nav-link text-white" href="404.html"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="https://t.me/crytoxcom"><i class="bi bi-wallet2 me-2"></i> Deposit</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="withdraw.html"><i class="bi bi-cash-coin me-2"></i> Withdraw</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="404.html"><i class="bi bi-receipt me-2"></i> Transactions</a></li>
-                    </ul>
-                </div>
-            </nav>
-
-            <!-- Toggle button for mobile (Telegram style) -->
-            <div class="d-md-none p-2">
-                <button class="btn btn-outline-dark w-100 mb-3" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
-                    <i class="bi bi-list me-1"></i> Menu
-                </button>
-            </div>
-
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-
-                <h2 class="mb-4 fw-bold text-dark">Welcome, <span id="username">User</span></h2>
+            <!-- Dashboard Content (Hidden by default) -->
+            <div id="dashboardContent" class="d-none">
+                <h2 class="mb-4 fw-bold text-dark" id="welcomeMessage">Welcome, User</h2>
 
                 <!-- Wallet Balance -->
                 <div class="card mb-4 shadow-sm rounded-3 overflow-hidden">
@@ -100,8 +183,8 @@
                             </div>
                         </div>
                         <h5 class="fw-light mb-1">Wallet Balance</h5>
-                        <h1 class="fw-bold">$<span id="balance">0.00</span></h1>
-                        <span class="badge bg-light text-dark px-3 py-2 mt-2">Currency: <span id="currency">USD</span></span>
+                        <h1 class="fw-bold" id="balanceAmount">$0.00</h1>
+                        <span class="badge bg-light text-dark px-3 py-2 mt-2">Currency: USD</span>
                     </div>
                 </div>
 
@@ -118,151 +201,200 @@
                     </div>
                 </div>
 
-                <!-- Spending Chart -->
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="fw-semibold text-dark">Spending Overview</h5>
-                        <canvas id="spendingChart" height="100"></canvas>
+                <!-- User Information -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="bi bi-person me-2"></i>Profile Information</h5>
+                                <div class="mt-3">
+                                    <p><strong>Name:</strong> <span id="userFullName">-</span></p>
+                                    <p><strong>Email:</strong> <span id="userEmail">-</span></p>
+                                    <p><strong>Phone:</strong> <span id="userPhone">-</span></p>
+                                    <p><strong>Member Since:</strong> <span id="memberSince">Today</span></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Transactions -->
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="fw-semibold text-dark">Recent Transactions</h5>
-                        <div id="transactions-container">
-                            <p class="text-muted mt-3">No transactions found.</p>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="bi bi-graph-up me-2"></i>Account Summary</h5>
+                                <div class="mt-3">
+                                    <p><strong>Account Status:</strong> <span class="badge bg-success">Active</span></p>
+                                    <p><strong>Total Deposits:</strong> <span id="totalDeposits">$0.00</span></p>
+                                    <p><strong>Total Withdrawals:</strong> <span id="totalWithdrawals">$0.00</span></p>
+                                    <p><strong>Pending Transactions:</strong> <span class="badge bg-warning">0</span></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
-    </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <script>
-        // Sample data - in production, this would come from your backend API
-        const userData = {
-            username: "John Doe",
-            balance: "2,450.75",
-            currency: "USD",
-            transactions: [
-                { date: "2024-01-15", type: "Deposit", amount: "1,000.00", status: "Completed" },
-                { date: "2024-01-14", type: "Withdrawal", amount: "500.00", status: "Completed" },
-                { date: "2024-01-13", type: "Deposit", amount: "2,000.00", status: "Pending" },
-                { date: "2024-01-12", type: "Transfer", amount: "150.00", status: "Completed" },
-                { date: "2024-01-11", type: "Withdrawal", amount: "300.00", status: "Failed" }
-            ]
-        };
-
-        // Update UI with user data
-        document.getElementById('username').textContent = userData.username;
-        document.getElementById('balance').textContent = userData.balance;
-        document.getElementById('currency').textContent = userData.currency;
-
-        // Render transactions table
-        function renderTransactions(transactions) {
-            const container = document.getElementById('transactions-container');
-            
-            if (transactions && transactions.length > 0) {
-                let html = `
-                    <div class="table-responsive">
-                        <table class="table mt-3 table-hover">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Type</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-                
-                transactions.forEach(tx => {
-                    const statusClass = 
-                        tx.status === 'Completed' ? 'bg-success' :
-                        tx.status === 'Pending' ? 'bg-warning text-dark' : 'bg-danger';
-                    
-                    html += `
-                        <tr>
-                            <td>${tx.date}</td>
-                            <td>${tx.type}</td>
-                            <td>$${tx.amount}</td>
-                            <td>
-                                <span class="badge ${statusClass}">${tx.status}</span>
-                            </td>
-                        </tr>
-                    `;
-                });
-                
-                html += `
-                            </tbody>
-                        </table>
+                <!-- Recent Activity -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-semibold text-dark"><i class="bi bi-clock-history me-2"></i>Recent Activity</h5>
+                        <div id="recentActivity" class="mt-3">
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-inbox display-4"></i>
+                                <p class="mt-2">No recent activity found</p>
+                            </div>
+                        </div>
                     </div>
-                `;
-                
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = '<p class="text-muted mt-3">No transactions found.</p>';
-            }
-        }
+                </div>
+            </div>
 
-        // Initialize transactions
-        renderTransactions(userData.transactions);
+            <!-- Error Message -->
+            <div id="errorMessage" class="d-none">
+                <div class="alert alert-danger text-center">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span id="errorText">Failed to load dashboard data</span>
+                    <br>
+                    <button class="btn btn-primary mt-2" onclick="loadDashboardData()">Try Again</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
 
-        // Initialize chart
-        const ctx = document.getElementById('spendingChart').getContext('2d');
-        const spendingChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Expenses',
-                    data: [500, 300, 400, 700, 200, 600],
-                    borderColor: '#3e3e3f',
-                    backgroundColor: 'rgba(62,62,63,0.2)',
-                    tension: 0.4
-                }, {
-                    label: 'Deposits',
-                    data: [700, 500, 600, 800, 400, 900],
-                    borderColor: '#358a9f',
-                    backgroundColor: 'rgba(53,138,159,0.2)',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
+<!-- Footer -->
+<footer class="text-center text-white py-3" style="background-color: #1f1f1f;">
+    <p class="mb-0">&copy; 2025 Global Rise Blockchain. All rights reserved.</p>
+</footer>
 
-        // Function to fetch real data from backend (when backend is deployed)
-        async function fetchDashboardData() {
-            try {
-                // This will work after you deploy your backend to PythonAnywhere
-                const response = await fetch('https://your-backend.pythonanywhere.com/api/dashboard');
-                const data = await response.json();
-                
-                // Update UI with real data
-                document.getElementById('username').textContent = data.username;
-                document.getElementById('balance').textContent = data.balance;
-                document.getElementById('currency').textContent = data.currency;
-                renderTransactions(data.transactions);
-                
-            } catch (error) {
-                console.log('Using sample data - backend not available yet');
-                // Keep using sample data if backend is not available
-            }
-        }
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        // Uncomment this when your backend is deployed:
-        // fetchDashboardData();
-    </script>
+<!-- Dashboard API Script -->
+<script>
+  const API_BASE = 'https://wellking.pythonanywhere.com/api';
+
+  // Check authentication and load data
+  document.addEventListener('DOMContentLoaded', function() {
+    const username = localStorage.getItem('username');
+    if (!username || username === 'admin') {
+      window.location.href = 'login.html';
+      return;
+    }
+    loadDashboardData();
+  });
+
+  // Load dashboard data from API
+  async function loadDashboardData() {
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const dashboardContent = document.getElementById('dashboardContent');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    // Show loading, hide others
+    loadingSpinner.classList.remove('d-none');
+    dashboardContent.classList.add('d-none');
+    errorMessage.classList.add('d-none');
+    
+    try {
+      const response = await fetch(`${API_BASE}/dashboard`);
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        // Update dashboard with real data
+        updateDashboard(data.user_data);
+        loadingSpinner.classList.add('d-none');
+        dashboardContent.classList.remove('d-none');
+      } else {
+        throw new Error(data.message || 'Failed to load dashboard');
+      }
+    } catch (error) {
+      console.error('Dashboard error:', error);
+      loadingSpinner.classList.add('d-none');
+      errorMessage.classList.remove('d-none');
+      document.getElementById('errorText').textContent = error.message;
+    }
+  }
+
+  // Update dashboard with user data
+  function updateDashboard(userData) {
+    // Welcome message
+    document.getElementById('welcomeMessage').textContent = `Welcome, ${userData.username}`;
+    
+    // Balance
+    document.getElementById('balanceAmount').textContent = `$${parseFloat(userData.balance || 0).toFixed(2)}`;
+    
+    // Profile information
+    document.getElementById('userFullName').textContent = `${userData.first_name || ''} ${userData.last_name || ''}`.trim() || 'Not provided';
+    document.getElementById('userEmail').textContent = userData.email || 'Not provided';
+    document.getElementById('userPhone').textContent = userData.phone || 'Not provided';
+    
+    // Calculate totals (you can enhance this with actual transaction data)
+    const balance = parseFloat(userData.balance || 0);
+    document.getElementById('totalDeposits').textContent = `$${(balance + 50).toFixed(2)}`; // Example calculation
+    document.getElementById('totalWithdrawals').textContent = `$50.00`; // Example
+    
+    // Update recent activity
+    updateRecentActivity(userData);
+  }
+
+  // Update recent activity section
+  function updateRecentActivity(userData) {
+    const activityContainer = document.getElementById('recentActivity');
+    const balance = parseFloat(userData.balance || 0);
+    
+    const activities = [
+      {
+        type: 'account_creation',
+        message: 'Account created successfully',
+        date: new Date().toLocaleDateString(),
+        icon: 'bi-person-plus'
+      }
+    ];
+    
+    // Add balance-related activity if balance > 0
+    if (balance > 0) {
+      activities.unshift({
+        type: 'balance_update',
+        message: `Account balance updated to $${balance.toFixed(2)}`,
+        date: new Date().toLocaleDateString(),
+        icon: 'bi-arrow-up-circle'
+      });
+    }
+    
+    if (activities.length === 0) {
+      activityContainer.innerHTML = `
+        <div class="text-center text-muted py-4">
+          <i class="bi bi-inbox display-4"></i>
+          <p class="mt-2">No recent activity found</p>
+        </div>
+      `;
+      return;
+    }
+    
+    activityContainer.innerHTML = activities.map(activity => `
+      <div class="d-flex align-items-center mb-3 p-3 border rounded">
+        <div class="flex-shrink-0">
+          <i class="${activity.icon} text-primary fs-4"></i>
+        </div>
+        <div class="flex-grow-1 ms-3">
+          <h6 class="mb-1">${activity.message}</h6>
+          <small class="text-muted">${activity.date}</small>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Logout function
+  document.getElementById('logoutBtn').addEventListener('click', async function() {
+    try {
+      await fetch(`${API_BASE}/logout`);
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    }
+  });
+
+  // Refresh data every 30 seconds
+  setInterval(loadDashboardData, 30000);
+</script>
+
 </body>
 </html>
