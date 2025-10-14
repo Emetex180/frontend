@@ -154,6 +154,24 @@
   .info-value {
     color: #495057;
   }
+
+  /* Transaction styling */
+  .transaction-item {
+    border-left: 4px solid #358a9f;
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+  }
+
+  .transaction-deposit {
+    border-left-color: #28a745;
+  }
+
+  .transaction-withdrawal {
+    border-left-color: #dc3545;
+  }
 </style>
 </head>
 <body>
@@ -359,6 +377,7 @@
                             <div class="text-center text-muted py-4">
                                 <i class="bi bi-inbox display-4"></i>
                                 <p class="mt-2">No recent activity found</p>
+                                <small class="text-muted">Your transaction history will appear here</small>
                             </div>
                         </div>
                     </div>
@@ -479,8 +498,13 @@
       console.log('📊 Dashboard API response:', data);
       
       if (data.status === 'success') {
-        // Update dashboard with real data
-        updateDashboard(data.user_data);
+        // Update dashboard with real data including transactions
+        updateDashboard(data.user_data, {
+          total_deposits: data.transaction_summary?.total_deposits || 0,
+          total_withdrawals: data.transaction_summary?.total_withdrawals || 0,
+          net_balance: data.transaction_summary?.net_balance || data.user_data.balance,
+          recent_transactions: data.recent_transactions || []
+        });
         loadingSpinner.classList.add('d-none');
         dashboardContent.classList.remove('d-none');
         updateUserStatus('Live');
@@ -498,9 +522,10 @@
     }
   }
 
-  // Update dashboard with user data
-  function updateDashboard(userData) {
+  // Update dashboard with user data - FIXED to show real transaction data
+  function updateDashboard(userData, transactionData) {
     console.log('🎯 Updating dashboard with:', userData);
+    console.log('📊 Transaction data:', transactionData);
     
     // Welcome message
     document.getElementById('welcomeMessage').textContent = `Welcome, ${userData.username}`;
@@ -516,72 +541,66 @@
     document.getElementById('userPhone').textContent = userData.phone || 'Not provided';
     document.getElementById('userAddress').textContent = userData.address || 'Not provided';
     
-    // Account summary
-    document.getElementById('userId').textContent = userData.id || 'N/A';
-    document.getElementById('totalDeposits').textContent = `$${(balance + 100).toFixed(2)}`;
-    document.getElementById('totalWithdrawals').textContent = `$100.00`;
-    document.getElementById('netBalance').textContent = `$${balance.toFixed(2)}`;
+    // Account summary - using REAL transaction data
+    const totalDeposits = parseFloat(transactionData.total_deposits || 0);
+    const totalWithdrawals = parseFloat(transactionData.total_withdrawals || 0);
+    const netBalance = parseFloat(transactionData.net_balance || balance);
     
-    // Update recent activity
-    updateRecentActivity(userData);
+    document.getElementById('userId').textContent = userData.id || 'N/A';
+    document.getElementById('totalDeposits').textContent = `$${totalDeposits.toFixed(2)}`;
+    document.getElementById('totalWithdrawals').textContent = `$${totalWithdrawals.toFixed(2)}`;
+    document.getElementById('netBalance').textContent = `$${netBalance.toFixed(2)}`;
+    
+    // Update recent activity with REAL transactions
+    updateRecentActivity(transactionData.recent_transactions || []);
   }
 
-  // Update recent activity section
-  function updateRecentActivity(userData) {
+  // Update recent activity section with REAL transactions
+  function updateRecentActivity(transactions) {
     const activityContainer = document.getElementById('recentActivity');
-    const balance = parseFloat(userData.balance || 0);
     
-    const activities = [
-      {
-        type: 'account_creation',
-        message: 'Account created successfully',
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString(),
-        icon: 'bi-person-plus text-success'
-      }
-    ];
-    
-    // Add balance-related activity if balance > 0
-    if (balance > 0) {
-      activities.unshift({
-        type: 'balance_update',
-        message: `Account credited: $${balance.toFixed(2)}`,
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString(),
-        icon: 'bi-arrow-up-circle text-success'
-      });
-    }
-    
-    // Add login activity
-    activities.unshift({
-      type: 'login',
-      message: 'Successful login to dashboard',
-      date: new Date().toLocaleDateString(),
-      time: new Date().toLocaleTimeString(),
-      icon: 'bi-box-arrow-in-right text-info'
-    });
-    
-    if (activities.length === 0) {
+    if (transactions.length === 0) {
       activityContainer.innerHTML = `
         <div class="text-center text-muted py-4">
           <i class="bi bi-inbox display-4"></i>
           <p class="mt-2">No recent activity found</p>
+          <small class="text-muted">Your transaction history will appear here</small>
         </div>
       `;
       return;
     }
     
-    activityContainer.innerHTML = activities.map(activity => `
-      <div class="d-flex align-items-center mb-3 p-3 border rounded">
-        <div class="flex-shrink-0">
-          <i class="${activity.icon} fs-4"></i>
+    activityContainer.innerHTML = transactions.map(transaction => {
+      const isDeposit = transaction.type === 'deposit';
+      const isWithdrawal = transaction.type === 'withdrawal';
+      const icon = isDeposit ? 'bi-arrow-down-circle text-success' : 
+                   isWithdrawal ? 'bi-arrow-up-circle text-danger' : 'bi-info-circle text-info';
+      const amountPrefix = isDeposit ? '+' : (isWithdrawal ? '-' : '');
+      const transactionClass = isDeposit ? 'transaction-deposit' : 
+                              isWithdrawal ? 'transaction-withdrawal' : '';
+      
+      return `
+        <div class="transaction-item ${transactionClass}">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+              <i class="${icon} fs-4"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h6 class="mb-1">${transaction.description || transaction.type}</h6>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">${new Date(transaction.created_at).toLocaleDateString()}</small>
+                <strong class="${isDeposit ? 'text-success' : (isWithdrawal ? 'text-danger' : 'text-info')}">
+                  ${amountPrefix}$${parseFloat(transaction.amount).toFixed(2)}
+                </strong>
+              </div>
+              <small class="badge bg-${transaction.status === 'completed' ? 'success' : 'warning'}">
+                ${transaction.status}
+              </small>
+            </div>
+          </div>
         </div>
-        <div class="flex-grow-1 ms-3">
-          <h6 class="mb-1">${activity.message}</h6>
-          <small class="text-muted">${activity.date} at ${activity.time}</small>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   // Show error message
@@ -637,7 +656,7 @@
     }
   }
 
-  // Demo data fallback
+  // Demo data fallback - UPDATED to show empty transactions
   function useDemoData() {
     const username = localStorage.getItem('username');
     const demoData = {
@@ -651,7 +670,14 @@
       id: 'DEMO-001'
     };
     
-    updateDashboard(demoData);
+    // Use empty transaction data for demo
+    updateDashboard(demoData, {
+      total_deposits: 0,
+      total_withdrawals: 0,
+      net_balance: 0,
+      recent_transactions: []
+    });
+    
     document.getElementById('loadingSpinner').classList.add('d-none');
     document.getElementById('errorMessage').classList.add('d-none');
     document.getElementById('dashboardContent').classList.remove('d-none');
