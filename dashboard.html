@@ -90,6 +90,70 @@
     font-size: 0.7rem;
     margin-left: 10px;
   }
+
+  /* Collapsible Section Styling */
+  .section-toggle {
+    background: linear-gradient(135deg, #358a9f, #4fc3dc);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .section-toggle:hover {
+    background: linear-gradient(135deg, #2f7a8f, #3fb3cc);
+    transform: translateY(-2px);
+  }
+
+  .section-toggle.collapsed .toggle-icon {
+    transform: rotate(0deg);
+  }
+
+  .section-toggle:not(.collapsed) .toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .toggle-icon {
+    transition: transform 0.3s ease;
+    font-size: 1.2rem;
+  }
+
+  .info-card {
+    border-left: 4px solid #358a9f;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  .info-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .info-item:last-child {
+    border-bottom: none;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: #2f2f30;
+    min-width: 140px;
+    display: inline-block;
+  }
+
+  .info-value {
+    color: #495057;
+  }
 </style>
 </head>
 <body>
@@ -218,33 +282,67 @@
                     </div>
                 </div>
 
-                <!-- User Information -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="bi bi-person me-2"></i>Profile Information</h5>
-                                <div class="mt-3">
-                                    <p><strong>Username:</strong> <span id="userUsername">-</span></p>
-                                    <p><strong>Full Name:</strong> <span id="userFullName">-</span></p>
-                                    <p><strong>Email:</strong> <span id="userEmail">-</span></p>
-                                    <p><strong>Phone:</strong> <span id="userPhone">-</span></p>
-                                    <p><strong>Address:</strong> <span id="userAddress">-</span></p>
-                                </div>
+                <!-- Profile Information Section (Collapsible) -->
+                <div class="mb-4">
+                    <button class="section-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#profileInfo" aria-expanded="false" aria-controls="profileInfo">
+                        <span><i class="bi bi-person me-2"></i>Profile Information</span>
+                        <i class="bi bi-chevron-down toggle-icon"></i>
+                    </button>
+                    
+                    <div class="collapse" id="profileInfo">
+                        <div class="info-card">
+                            <div class="info-item">
+                                <span class="info-label">Username:</span>
+                                <span class="info-value" id="userUsername">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Full Name:</span>
+                                <span class="info-value" id="userFullName">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Email:</span>
+                                <span class="info-value" id="userEmail">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Phone:</span>
+                                <span class="info-value" id="userPhone">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Address:</span>
+                                <span class="info-value" id="userAddress">-</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="bi bi-graph-up me-2"></i>Account Summary</h5>
-                                <div class="mt-3">
-                                    <p><strong>Account Status:</strong> <span class="badge bg-success">Active</span></p>
-                                    <p><strong>Account ID:</strong> <span id="userId">-</span></p>
-                                    <p><strong>Total Deposits:</strong> <span id="totalDeposits">$0.00</span></p>
-                                    <p><strong>Total Withdrawals:</strong> <span id="totalWithdrawals">$0.00</span></p>
-                                    <p><strong>Net Balance:</strong> <span id="netBalance">$0.00</span></p>
-                                </div>
+                </div>
+
+                <!-- Account Summary Section (Collapsible) -->
+                <div class="mb-4">
+                    <button class="section-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#accountSummary" aria-expanded="false" aria-controls="accountSummary">
+                        <span><i class="bi bi-graph-up me-2"></i>Account Summary</span>
+                        <i class="bi bi-chevron-down toggle-icon"></i>
+                    </button>
+                    
+                    <div class="collapse" id="accountSummary">
+                        <div class="info-card">
+                            <div class="info-item">
+                                <span class="info-label">Account Status:</span>
+                                <span class="info-value"><span class="badge bg-success">Active</span></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Account ID:</span>
+                                <span class="info-value" id="userId">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Total Deposits:</span>
+                                <span class="info-value" id="totalDeposits">$0.00</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Total Withdrawals:</span>
+                                <span class="info-value" id="totalWithdrawals">$0.00</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Net Balance:</span>
+                                <span class="info-value" id="netBalance">$0.00</span>
                             </div>
                         </div>
                     </div>
@@ -306,7 +404,7 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Dashboard API Script - UPDATED FOR TOKEN AUTH -->
+<!-- Dashboard API Script -->
 <script>
   const API_BASE = 'https://wellking.pythonanywhere.com/api';
   let lastUpdateTime = null;
@@ -339,7 +437,7 @@
     loadDashboardData();
   });
 
-  // Load dashboard data from API - UPDATED FOR TOKEN AUTH
+  // Load dashboard data from API
   async function loadDashboardData() {
     const loadingSpinner = document.getElementById('loadingSpinner');
     const dashboardContent = document.getElementById('dashboardContent');
@@ -419,6 +517,7 @@
     document.getElementById('userAddress').textContent = userData.address || 'Not provided';
     
     // Account summary
+    document.getElementById('userId').textContent = userData.id || 'N/A';
     document.getElementById('totalDeposits').textContent = `$${(balance + 100).toFixed(2)}`;
     document.getElementById('totalWithdrawals').textContent = `$100.00`;
     document.getElementById('netBalance').textContent = `$${balance.toFixed(2)}`;
@@ -524,7 +623,7 @@
     }
   }
 
-  // Check session status - UPDATED FOR TOKEN AUTH
+  // Check session status
   async function checkSessionStatus() {
     try {
       const response = await fetch(`${API_BASE}/check-auth`, {
@@ -548,7 +647,8 @@
       last_name: 'User',
       email: 'user@example.com',
       phone: '+1234567890',
-      address: '123 Demo Street, Demo City'
+      address: '123 Demo Street, Demo City',
+      id: 'DEMO-001'
     };
     
     updateDashboard(demoData);
@@ -565,7 +665,7 @@
     updateUserStatus('Demo Mode');
   }
 
-  // Logout function - UPDATED FOR TOKEN AUTH
+  // Logout function
   document.getElementById('logoutBtn').addEventListener('click', function() {
     console.log('🚪 Logging out...');
     if (confirm('Are you sure you want to logout?')) {
