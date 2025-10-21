@@ -366,8 +366,8 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="card shadow-sm">
+                <!-- Recent Activity - HIDDEN -->
+                <div class="card shadow-sm d-none">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="fw-semibold text-dark mb-0"><i class="bi bi-clock-history me-2"></i>Recent Activity</h5>
@@ -498,12 +498,12 @@
       console.log('📊 Dashboard API response:', data);
       
       if (data.status === 'success') {
-        // Update dashboard with real data including transactions
+        // Update dashboard with real data (excluding transactions)
         updateDashboard(data.user_data, {
           total_deposits: data.transaction_summary?.total_deposits || 0,
           total_withdrawals: data.transaction_summary?.total_withdrawals || 0,
-          net_balance: data.transaction_summary?.net_balance || data.user_data.balance,
-          recent_transactions: data.recent_transactions || []
+          net_balance: data.transaction_summary?.net_balance || data.user_data.balance
+          // Note: We're not passing recent_transactions to hide them
         });
         loadingSpinner.classList.add('d-none');
         dashboardContent.classList.remove('d-none');
@@ -522,7 +522,7 @@
     }
   }
 
-  // Update dashboard with user data - FIXED to show real transaction data
+  // Update dashboard with user data - MODIFIED to hide transaction history
   function updateDashboard(userData, transactionData) {
     console.log('🎯 Updating dashboard with:', userData);
     console.log('📊 Transaction data:', transactionData);
@@ -541,7 +541,7 @@
     document.getElementById('userPhone').textContent = userData.phone || 'Not provided';
     document.getElementById('userAddress').textContent = userData.address || 'Not provided';
     
-    // Account summary - using REAL transaction data
+    // Account summary - using REAL transaction data but not showing transactions
     const totalDeposits = parseFloat(transactionData.total_deposits || 0);
     const totalWithdrawals = parseFloat(transactionData.total_withdrawals || 0);
     const netBalance = parseFloat(transactionData.net_balance || balance);
@@ -551,56 +551,13 @@
     document.getElementById('totalWithdrawals').textContent = `$${totalWithdrawals.toFixed(2)}`;
     document.getElementById('netBalance').textContent = `$${netBalance.toFixed(2)}`;
     
-    // Update recent activity with REAL transactions
-    updateRecentActivity(transactionData.recent_transactions || []);
+    // We're intentionally NOT calling updateRecentActivity to hide transaction history
   }
 
-  // Update recent activity section with REAL transactions
+  // Update recent activity section with REAL transactions - NOT USED
   function updateRecentActivity(transactions) {
-    const activityContainer = document.getElementById('recentActivity');
-    
-    if (transactions.length === 0) {
-      activityContainer.innerHTML = `
-        <div class="text-center text-muted py-4">
-          <i class="bi bi-inbox display-4"></i>
-          <p class="mt-2">No recent activity found</p>
-          <small class="text-muted">Your transaction history will appear here</small>
-        </div>
-      `;
-      return;
-    }
-    
-    activityContainer.innerHTML = transactions.map(transaction => {
-      const isDeposit = transaction.type === 'deposit';
-      const isWithdrawal = transaction.type === 'withdrawal';
-      const icon = isDeposit ? 'bi-arrow-down-circle text-success' : 
-                   isWithdrawal ? 'bi-arrow-up-circle text-danger' : 'bi-info-circle text-info';
-      const amountPrefix = isDeposit ? '+' : (isWithdrawal ? '-' : '');
-      const transactionClass = isDeposit ? 'transaction-deposit' : 
-                              isWithdrawal ? 'transaction-withdrawal' : '';
-      
-      return `
-        <div class="transaction-item ${transactionClass}">
-          <div class="d-flex align-items-center">
-            <div class="flex-shrink-0">
-              <i class="${icon} fs-4"></i>
-            </div>
-            <div class="flex-grow-1 ms-3">
-              <h6 class="mb-1">${transaction.description || transaction.type}</h6>
-              <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted">${new Date(transaction.created_at).toLocaleDateString()}</small>
-                <strong class="${isDeposit ? 'text-success' : (isWithdrawal ? 'text-danger' : 'text-info')}">
-                  ${amountPrefix}$${parseFloat(transaction.amount).toFixed(2)}
-                </strong>
-              </div>
-              <small class="badge bg-${transaction.status === 'completed' ? 'success' : 'warning'}">
-                ${transaction.status}
-              </small>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
+    // This function is intentionally left empty to hide transaction history
+    // No transaction data will be displayed
   }
 
   // Show error message
@@ -656,7 +613,7 @@
     }
   }
 
-  // Demo data fallback - UPDATED to show empty transactions
+  // Demo data fallback - UPDATED to hide transaction history
   function useDemoData() {
     const username = localStorage.getItem('username');
     const demoData = {
@@ -674,8 +631,8 @@
     updateDashboard(demoData, {
       total_deposits: 0,
       total_withdrawals: 0,
-      net_balance: 0,
-      recent_transactions: []
+      net_balance: 0
+      // No recent_transactions passed to hide them
     });
     
     document.getElementById('loadingSpinner').classList.add('d-none');
